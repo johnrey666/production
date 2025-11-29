@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CTK | Recipes</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/script.js" defer></script>
+</head>
+<body>
+<div class="app">
+<aside id="sidebar" class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+  <main class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Recipe Standards</h1>
+      </div>
+    </header>
+    
+    <div class="content">
+      <button class="btn btn-primary" onclick="addRecipe()">+ Add Recipe</button>
+      <div class="recipes-container">
+        <div id="recipes"></div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

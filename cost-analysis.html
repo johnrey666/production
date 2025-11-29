@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTK | Cost Analysis</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/script.js" defer></script>
+</head>
+<body>
+
+<div class="app">
+<aside id="sidebar" class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+  <main class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Cost Analysis & Recipe Costing</h1>
+      </div>
+    </header>
+    
+    <div class="content">
+
+      <div class="stats">
+        <div class="stat"><div class="stat-value" id="totalCost">₱0</div><div class="stat-label">Total Raw Cost Today</div></div>
+        <div class="stat"><div class="stat-value" id="avgCostPerKg">₱0</div><div class="stat-label">Avg Cost per kg Produced</div></div>
+        <div class="stat"><div class="stat-value" id="topProduct">-</div><div class="stat-label">Highest Cost Product</div></div>
+        <div class="stat"><div class="stat-value positive" id="variance">+0 kg</div><div class="stat-label">Net Yield Variance</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Recipe Cost Calculator</div>
+          <button class="btn btn-primary" onclick="addRecipeRow()">+ Add Ingredient</button>
+        </div>
+        <div class="card-body">
+          <input type="text" id="recipeName" placeholder="Recipe / Product Name" style="margin-bottom:12px;font-weight:600;width:100%;max-width:300px;">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Raw Material</th><th>Qty Used (kg)</th><th>Cost/kg</th><th>Total Cost</th><th></th>
+                </tr>
+              </thead>
+              <tbody id="recipeBody"></tbody>
+              <tfoot>
+                <tr><td colspan="3"><strong>Total Recipe Cost</strong></td><td id="recipeTotal">₱0.00</td><td></td></tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTK | Raw Materials</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/script.js" defer></script>
+</head>
+<body>
+
+<div class="app">
+<aside id="sidebar" class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+  <main class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Raw Materials Master List</h1>
+      </div>
+    </header>
+    
+    <div class="content">
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Raw Materials Database</div>
+          <button class="btn btn-primary" onclick="addMat()">+ Add Material</button>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>SKU</th>
+                  <th>Description</th>
+                  <th>Unit Cost</th>
+                  <th>Cost/kg</th>
+                  <th>Category</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="matBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTK | Reports</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/script.js" defer></script>
+</head>
+<body>
+
+<div class="app">
+<aside id="sidebar" class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+  <main class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Reports & Analytics</h1>
+      </div>
+    </header>
+    
+    <div class="content">
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Select Report Period</div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <input type="month" id="reportMonth" onchange="generateReport()">
+            <button class="btn btn-primary" onclick="exportCSV()">Export CSV</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="stats">
+            <div class="stat"><div class="stat-value" id="rDays">0</div><div class="stat-label">Production Days</div></div>
+            <div class="stat"><div class="stat-value" id="rOutput">0 kg</div><div class="stat-label">Total Output</div></div>
+            <div class="stat"><div class="stat-value" id="rCost">₱0</div><div class="stat-label">Total Raw Cost</div></div>
+            <div class="stat"><div class="stat-value" id="rAvg">₱0</div><div class="stat-label">Avg ₱/kg</div></div>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th><th>Product</th><th>Order (batches)</th><th>Expected kg</th><th>Actual kg</th><th>Raw Used kg</th><th>Raw Cost</th><th>Variance kg</th>
+                </tr>
+              </thead>
+              <tbody id="reportBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+</body>
+</html>

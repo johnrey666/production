@@ -1,0 +1,514 @@
+/* assets/style.css – Minimal Professional (2025) */
+@import url('https://rsms.me/inter/inter.css');
+
+:root {
+  --white: #ffffff;
+  --bg: #fbfbfc;
+  --border: #e2e6eb;
+  --text: #1a1f1f5;
+  --text-muted: #6b7280;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-bg: #eff6ff;
+  --success: #059669;
+  --danger: #dc2626;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html { font-family: 'Inter', system-ui, sans-serif; }
+@supports (font-variation-settings: normal) {
+  html { font-family: 'Inter var', system-ui, sans-serif; }
+}
+
+body {
+  font: 13px/1.5 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  overflow: auto;
+}
+
+/* Mobile First Approach */
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: fixed;
+  width: 210px;
+  left: -210px; /* Hidden by default on mobile */
+  top: 0;
+  overflow-y: auto;
+  transition: left 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar.active {
+  left: 0; /* Show sidebar when active */
+}
+
+.logo {
+  padding: 20px 24px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -0.6px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-sidebar {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.nav { flex: 1; padding: 8px 0; }
+.nav a {
+  display: flex; align-items: center;
+  padding: 9px 24px; color: var(--text-muted);
+  font-weight: 500; font-size: 13.5px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.nav a:hover { background: var(--accent-bg); color: var(--accent); }
+.nav a.active {
+  color: var(--accent); background: var(--accent-bg);
+  font-weight: 600; position: relative;
+}
+.nav a.active::before {
+  content: ''; position: absolute; left: 0; top: 8px; bottom: 8px;
+  width: 3px; background: var(--accent); border-radius: 0 2px 2px 0;
+}
+.nav a i { width: 18px; margin-right: 12px; font-size: 15px; opacity: 0.8; }
+
+/* Main Content */
+.main { 
+  display: flex; 
+  flex-direction: column; 
+  min-height: 100vh;
+  width: 100%;
+  transition: margin-left 0.3s ease;
+}
+
+/* Header with mobile menu button */
+.header { 
+  background: var(--white); 
+  padding: 16px 20px; 
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--text);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.header h1 { 
+  font-size: 19px; 
+  font-weight: 700; 
+  color: var(--text);
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.content { 
+  padding: 20px; 
+  overflow-y: visible;
+  background: var(--bg);
+  flex: 1;
+  min-height: 0;
+}
+
+/* Responsive Tables */
+.table-container {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  font-size: 13px;
+  min-width: 600px; /* Minimum table width */
+}
+th { 
+  text-align: left; 
+  padding: 10px 12px; 
+  background: #f9fafb; 
+  font-weight: 600;
+  color: var(--text-muted); 
+  font-size: 12px; 
+  text-transform: uppercase;
+  letter-spacing: 0.5px; 
+  border-bottom: 1px solid var(--border); 
+}
+td { 
+  padding: 9px 12px; 
+  border-bottom: 1px solid var(--border); 
+}
+tr:hover td { background: var(--accent-bg); }
+
+/* Form Elements */
+input, select {
+  padding: 7px 10px; 
+  border: 1px solid var(--border); 
+  border-radius: 6px;
+  font-size: 13px; 
+  background: white;
+  width: 100%;
+  max-width: 100%;
+}
+input:focus, select:focus { 
+  outline: none; 
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1); 
+}
+
+.btn {
+  padding: 7px 14px; 
+  border: none; 
+  border-radius: 6px; 
+  font-size: 13px;
+  font-weight: 600; 
+  cursor: pointer; 
+  background: var(--accent); 
+  color: white;
+  transition: background 0.2s;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+.btn:hover { background: var(--accent-hover); }
+.btn-small { 
+  padding: 4px 9px; 
+  font-size: 12px; 
+  background: var(--danger); 
+}
+
+/* Stats Grid */
+.stats {
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px; 
+  margin-bottom: 24px;
+}
+.stat { 
+  background: white; 
+  padding: 16px; 
+  border-radius: 10px;
+  border: 1px solid var(--border); 
+  text-align: center; 
+}
+.stat-value { 
+  font-size: 26px; 
+  font-weight: 800; 
+  margin: 6px 0; 
+}
+.stat-label { 
+  font-size: 11.5px; 
+  color: var(--text-muted);
+  text-transform: uppercase; 
+  letter-spacing: 0.6px; 
+  font-weight: 500; 
+}
+
+.positive { color: var(--success); font-weight: 600; }
+.negative { color: var(--danger); font-weight: 600; }
+
+/* Cards */
+.card {
+  background: var(--white); 
+  border: 1px solid var(--border);
+  border-radius: 10px; 
+  overflow: hidden; 
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.card-header {
+  padding: 12px 20px; 
+  background: #f8fafc; 
+  border-bottom: 1px solid var(--border);
+  font-weight: 600; 
+  font-size: 13.5px; 
+  display: flex; 
+  justify-content: space-between;
+  align-items: center; 
+  color: var(--text);
+}
+.card-body { 
+  padding: 16px 20px; 
+  overflow: visible; 
+}
+
+/* Add scrollable container for recipe cards */
+.recipes-container {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* Custom scrollbar for better appearance */
+.recipes-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.recipes-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.recipes-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.recipes-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Pagination Styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  padding: 16px 0;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.pagination-btn {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--text);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.pagination-btn.active {
+  background: var(--accent);
+  color: var(--white);
+  border-color: var(--accent);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0 16px;
+}
+
+.recipes-per-page {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.recipes-per-page label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.recipes-per-page select {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+/* Overlay for mobile sidebar */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.sidebar-overlay.active {
+  display: block;
+}
+
+/* Tablet Styles (768px and up) */
+@media (min-width: 768px) {
+  .app {
+    display: grid;
+    grid-template-columns: 210px 1fr;
+  }
+  
+  .sidebar {
+    position: relative;
+    left: 0;
+  }
+  
+  .main {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .menu-toggle {
+    display: none !important;
+  }
+  
+  .close-sidebar {
+    display: none !important;
+  }
+  
+  .sidebar-overlay {
+    display: none !important;
+  }
+  
+  .content {
+    padding: 24px 32px;
+  }
+  
+  .header {
+    padding: 16px 32px;
+  }
+  
+  .stats {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+}
+
+/* Desktop Styles (1024px and up) */
+@media (min-width: 1024px) {
+  .stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Mobile Styles (up to 767px) */
+@media (max-width: 767px) {
+  .menu-toggle {
+    display: block;
+  }
+  
+  .close-sidebar {
+    display: block;
+  }
+  
+  .header h1 {
+    font-size: 16px;
+  }
+  
+  .content {
+    padding: 16px;
+  }
+  
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  
+  .stat {
+    padding: 12px;
+  }
+  
+  .stat-value {
+    font-size: 22px;
+  }
+  
+  .card-header {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+  
+  .card-body {
+    padding: 12px 16px;
+  }
+  
+  .pagination {
+    gap: 4px;
+  }
+  
+  .pagination-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  
+  .pagination-info {
+    margin: 0 8px;
+    font-size: 12px;
+  }
+}
+
+/* Small Mobile Styles (up to 480px) */
+@media (max-width: 480px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .header {
+    padding: 12px 16px;
+  }
+  
+  .content {
+    padding: 12px;
+  }
+  
+  .header-actions {
+    gap: 8px;
+  }
+  
+  .btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}

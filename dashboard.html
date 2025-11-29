@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CTK | Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="assets/script.js" defer></script>
+</head>
+<body>
+
+<div class="app">
+  <aside id="sidebar" class="sidebar"></aside>
+  <div class="sidebar-overlay"></div>
+
+  <main class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Production Dashboard</h1>
+      </div>
+      <div class="header-actions">
+        <span id="todayDate"></span>
+        <button class="btn" onclick="logout()" style="background: var(--danger);">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </button>
+      </div>
+    </header>
+    
+    <div class="content">
+      <div class="stats">
+        <div class="stat"><div class="stat-value">68</div><div class="stat-label">Batches Today</div></div>
+        <div class="stat"><div class="stat-value">2,847 kg</div><div class="stat-label">Total Output</div></div>
+        <div class="stat"><div class="stat-value">₱892,450</div><div class="stat-label">Raw Mat Cost</div></div>
+        <div class="stat"><div class="stat-value positive">+12.4 kg</div><div class="stat-label">Net Variance</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">Today's Summary</div></div>
+        <div class="card-body">
+          <p>All systems running smoothly. Production on track.</p>
+          <p><strong>Top Product:</strong> Pork BBQ • <strong>Wastage Alert:</strong> None</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Set today's date in the header
+  document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const todayDateEl = document.getElementById('todayDate');
+    if (todayDateEl) {
+      todayDateEl.textContent = today.toLocaleDateString('en-PH', options);
+    }
+  });
+  
+  function logout() {
+    if (confirm('Are you sure you want to logout?')) {
+      window.location.href = 'index.html';
+    }
+  }
+</script>
+</body>
+</html>

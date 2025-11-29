@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTK | Daily Production</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/script.js" defer></script>
+<style>
+  .positive { color: var(--success); font-weight: 600; }
+  .negative { color: var(--danger); font-weight: 600; }
+  th, td { font-size: 13px; }
+  input, select { font-size: 13px; height: 32px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+<aside id="sidebar" class="sidebar"></aside>
+<div class="sidebar-overlay"></div>
+
+  <main class="main">
+    <header class="header">
+      <div class="header-left">
+        <button class="menu-toggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1>Daily Production Entry — <span id="todayDate"></span></h1>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="card">
+        <div class="card-header">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <input type="date" id="prodDate" onchange="loadDay()" style="padding:6px 10px;">
+            <button class="btn btn-primary" onclick="today()">Today</button>
+          </div>
+          <button class="btn btn-primary" onclick="addRow()">+ Add Product</button>
+        </div>
+
+        <div class="card-body" style="padding:0">
+          <div class="table-container">
+            <table style="width:100%;min-width:900px">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Std Yield<br><small>(kg per batch)</small></th>
+                  <th>Batches<br>Ordered</th>
+                  <th>Expected<br>Output (kg)</th>
+                  <th>Actual<br>Output (kg)</th>
+                  <th>Raw Mat<br>Cost</th>
+                  <th>Variance<br>(kg)</th>
+                  <th>Cost/kg</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="prodBody"></tbody>
+            </table>
+          </div>
+
+          <div style="padding:16px;background:#f8fafc;border-top:1px solid var(--border);font-weight:600;font-size:15px">
+            Total Raw Cost Today: <span id="totalCost">₱0</span> | 
+            Total Output: <span id="totalOutput">0 kg</span> | 
+            Average Cost/kg: <span id="avgCost">₱0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+</body>
+</html>
