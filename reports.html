@@ -59,5 +59,83 @@
   </main>
 </div>
 
+<script>
+    /* -------------------
+   reports.html code
+   ------------------- */
+function initReports() {
+  window.prodDB = JSON.parse(localStorage.getItem('ctk_prod')) || {};
+
+  window.generateReport = function() {
+    const monthInput = document.getElementById('reportMonth') ? document.getElementById('reportMonth').value : '';
+    const tbody = document.getElementById('reportBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    let totalOutput = 0, totalCost = 0, totalDays = 0;
+
+    Object.keys(window.prodDB).sort().forEach(date => {
+      if (!monthInput || date.startsWith(monthInput)) {
+        const day = window.prodDB[date];
+        (day || []).forEach((r, idx) => {
+          const expected = (r.o || 0) * (r.y || 0);
+          const actual = r.out || 0;
+          const rawKg = r.r || 0;
+          const cost = rawKg * 300;
+
+          totalOutput += actual;
+          totalCost += cost;
+          if (idx === 0) totalDays++;
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${date}</td>
+            <td>${r.p || '-'}</td>
+            <td>${r.o || 0}</td>
+            <td>${expected.toFixed(1)}</td>
+            <td>${actual.toFixed(1)}</td>
+            <td>${rawKg.toFixed(1)}</td>
+            <td>₱${cost.toFixed(0)}</td>
+            <td class="${(actual - expected) >= 0 ? 'positive' : 'negative'}">${(actual - expected).toFixed(1)}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+    });
+
+    const daysEl = document.getElementById('rDays');
+    const outEl = document.getElementById('rOutput');
+    const costEl = document.getElementById('rCost');
+    const avgEl = document.getElementById('rAvg');
+    if (daysEl) daysEl.textContent = totalDays;
+    if (outEl) outEl.textContent = totalOutput.toFixed(0) + ' kg';
+    if (costEl) costEl.textContent = '₱' + totalCost.toLocaleString();
+    if (avgEl) avgEl.textContent = totalOutput ? '₱' + (totalCost / totalOutput).toFixed(0) : '₱0';
+  };
+
+  // default month set & initial generate
+  const now = new Date();
+  const monthEl = document.getElementById('reportMonth');
+  if (monthEl) monthEl.value = now.toISOString().slice(0,7);
+  window.generateReport();
+
+  window.exportCSV = function() {
+    let csv = "Date,Product,Order Batches,Expected kg,Actual kg,Raw Used kg,Raw Cost,Variance kg\n";
+    document.querySelectorAll('#reportBody tr').forEach(row => {
+      const cells = Array.from(row.cells).map(c => c.textContent.replace(/,/g, ''));
+      csv += cells.join(',') + "\n";
+    });
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const monthVal = document.getElementById('reportMonth') ? document.getElementById('reportMonth').value : '';
+    a.href = url;
+    a.download = `CTK_Report_${monthVal}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+}
+
+</script>
 </body>
 </html>

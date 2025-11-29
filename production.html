@@ -71,5 +71,124 @@
   </main>
 </div>
 
+<script>
+  
+/* -------------------
+   production.html code
+   ------------------- */
+function initProduction() {
+  window.rawMaterials = JSON.parse(localStorage.getItem('ctk_raw')) || JSON.parse(localStorage.getItem('ctk_mats')) || [];
+  window.recipes = JSON.parse(localStorage.getItem('ctk_recipes')) || [];
+  const DB = 'ctk_prod';
+  window.data = JSON.parse(localStorage.getItem(DB)) || {};
+
+  window.today = function() {
+    const today = new Date().toISOString().split('T')[0];
+    const dEl = document.getElementById('prodDate');
+    if (dEl) dEl.value = today;
+    const hd = document.getElementById('todayDate');
+    if (hd) hd.textContent = new Date().toLocaleDateString('en-PH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    loadDay();
+  };
+
+  window.loadDay = function() {
+    const date = document.getElementById('prodDate').value || new Date().toISOString().split('T')[0];
+    if (!window.data[date]) window.data[date] = [];
+
+    const tbody = document.getElementById('prodBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    let totalCost = 0;
+    let totalOutput = 0;
+
+    window.data[date].forEach((entry, i) => {
+      const recipe = window.recipes.find(r => r.name === entry.product) || { yieldKg: 0, ingredients: [] };
+      const batches = entry.batches || 0;
+      const actualOutput = entry.output || 0;
+      const expectedOutput = batches * (recipe.yieldKg || 0);
+      const variance = actualOutput - expectedOutput;
+
+      let rawCost = 0;
+      (recipe.ingredients || []).forEach(ing => {
+        const mat = window.rawMaterials.find(m => m.sku === ing.sku);
+        if (mat) rawCost += (ing.qty || 0) * batches * (mat.perkg || mat.costPerKg || 0);
+      });
+
+      totalCost += rawCost;
+      totalOutput += actualOutput;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>
+          <select onchange="update(${i}, 'product', this.value)" style="width:100%">
+            <option value="">-- Select Product --</option>
+            ${window.recipes.map(r => `<option value="${r.name}" ${r.name===entry.product?'selected':''}>${r.name}</option>`).join('')}
+          </select>
+        </td>
+        <td style="text-align:center">${recipe.yieldKg || '-'}</td>
+        <td><input type="number" min="0" step="0.5" value="${batches}" style="width:70px" onchange="update(${i}, 'batches', +this.value)"></td>
+        <td style="text-align:center">${(expectedOutput).toFixed(2)}</td>
+        <td><input type="number" step="0.1" value="${actualOutput}" style="width:80px" onchange="update(${i}, 'output', +this.value)"></td>
+        <td style="text-align:right;font-weight:600">₱${rawCost.toFixed(0)}</td>
+        <td class="${variance < 0 ? 'negative' : variance > 0 ? 'positive' : ''}" style="font-weight:600">
+          ${variance.toFixed(2)}
+        </td>
+        <td style="text-align:right">
+          ${actualOutput > 0 ? '₱' + (rawCost / actualOutput).toFixed(1) : '-'}
+        </td>
+        <td><button class="btn btn-small" style="background:#e53e3e;color:white;" onclick="del(${i})">×</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    const totalCostEl = document.getElementById('totalCost');
+    const totalOutputEl = document.getElementById('totalOutput');
+    const avgCostEl = document.getElementById('avgCost');
+    if (totalCostEl) totalCostEl.textContent = '₱' + totalCost.toFixed(0);
+    if (totalOutputEl) totalOutputEl.textContent = totalOutput.toFixed(2) + ' kg';
+    if (avgCostEl) avgCostEl.textContent = totalOutput > 0 ? '₱' + (totalCost / totalOutput).toFixed(1) + '/kg' : '₱0/kg';
+  };
+
+  window.update = function(i, field, value) {
+    const date = document.getElementById('prodDate').value || new Date().toISOString().split('T')[0];
+    if (!window.data[date]) window.data[date] = [];
+    if (!window.data[date][i]) window.data[date][i] = { product: '', batches: 0, output: 0 };
+
+    window.data[date][i][field] = value;
+
+    if (field === 'product' && value) {
+      const recipe = window.recipes.find(r => r.name === value);
+      if (recipe) window.data[date][i].batches = window.data[date][i].batches || 1;
+    }
+
+    localStorage.setItem('ctk_prod', JSON.stringify(window.data));
+    window.loadDay();
+  };
+
+  window.addRow = function() {
+    const date = document.getElementById('prodDate').value || new Date().toISOString().split('T')[0];
+    if (!window.data[date]) window.data[date] = [];
+    window.data[date].push({
+      product: window.recipes.length > 0 ? window.recipes[0].name : "",
+      batches: 1,
+      output: 0
+    });
+    localStorage.setItem('ctk_prod', JSON.stringify(window.data));
+    window.loadDay();
+  };
+
+  window.del = function(i) {
+    if (!confirm('Delete this entry?')) return;
+    const date = document.getElementById('prodDate').value || new Date().toISOString().split('T')[0];
+    window.data[date].splice(i, 1);
+    localStorage.setItem('ctk_prod', JSON.stringify(window.data));
+    window.loadDay();
+  };
+
+  // Auto-load today on production page
+  window.today();
+}
+</script>
 </body>
 </html>

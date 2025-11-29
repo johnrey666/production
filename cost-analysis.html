@@ -60,5 +60,105 @@
   </main>
 </div>
 
+<script>
+    
+/* -------------------
+   cost-analysis.html code
+   ------------------- */
+function initCostAnalysis() {
+  window.mats = JSON.parse(localStorage.getItem('ctk_mats')) || [];
+  window.prodDB = JSON.parse(localStorage.getItem('ctk_prod')) || {};
+
+  function loadSummary() {
+    const today = new Date().toISOString().split('T')[0];
+    const dayData = window.prodDB[today] || [];
+
+    let totalRawCost = 0;
+    let totalOutput = 0;
+    let variance = 0;
+    const productCost = {};
+
+    dayData.forEach(r => {
+      const rawKg = r.r || 0;
+      const outputKg = r.out || 0;
+      const expected = (r.o || 0) * (r.y || 0);
+      const cost = rawKg * 300; // keep original placeholder
+
+      totalRawCost += cost;
+      totalOutput += outputKg;
+      variance += (outputKg - expected);
+
+      if (r.p) productCost[r.p] = (productCost[r.p] || 0) + cost;
+    });
+
+    const totalCostEl = document.getElementById('totalCost');
+    const avgEl = document.getElementById('avgCostPerKg');
+    const topEl = document.getElementById('topProduct');
+    const vEl = document.getElementById('variance');
+
+    if (totalCostEl) totalCostEl.textContent = '₱' + totalRawCost.toLocaleString(undefined, {minimumFractionDigits: 0});
+    if (avgEl) avgEl.textContent = totalOutput ? '₱' + (totalRawCost / totalOutput).toFixed(0) : '₱0';
+    const top = Object.entries(productCost).sort((a,b)=>b[1]-a[1])[0];
+    if (topEl) topEl.textContent = top ? top[0] : '-';
+    if (vEl) {
+      vEl.textContent = variance > 0 ? '+' + variance.toFixed(1) + ' kg' : variance.toFixed(1) + ' kg';
+      vEl.className = variance >= 0 ? 'positive' : 'negative';
+    }
+  }
+
+  function loadRecipeTable() {
+    const tbody = document.getElementById('recipeBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    window.mats.forEach((m, i) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${m.desc} (${m.sku})</td>
+        <td><input type="number" step="0.01" min="0" data-idx="${i}" onchange="calcRecipe()"></td>
+        <td>₱${(m.perkg||0).toFixed(1)}</td>
+        <td id="tc${i}">₱0.00</td>
+        <td><button class="btn btn-small" style="background:#e53e3e;color:white;" onclick="this.parentElement.parentElement.remove();calcRecipe()">×</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+    calcRecipe();
+  }
+
+  window.addRecipeRow = function() {
+    const tbody = document.getElementById('recipeBody');
+    if (!tbody) return;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><input placeholder="Custom item" style="width:100%"></td>
+      <td><input type="number" step="0.01" min="0" onchange="calcRecipe()"></td>
+      <td><input type="number" step="0.1" value="0" onchange="calcRecipe()"></td>
+      <td id="tcCustom${tbody.children.length}">₱0.00</td>
+      <td><button class="btn btn-small" style="background:#e53e3e;color:white;" onclick="this.parentElement.parentElement.remove();calcRecipe()">×</button></td>
+    `;
+    tbody.appendChild(tr);
+    calcRecipe();
+  };
+
+  window.calcRecipe = function() {
+    let total = 0;
+    document.querySelectorAll('#recipeBody tr').forEach(row => {
+      const qtyInput = row.querySelector('input[type=number]:nth-of-type(1)');
+      const costKgInput = row.querySelector('input[type=number]:nth-of-type(2)') || {value: row.cells[2].textContent.replace('₱','')};
+      const qty = parseFloat(qtyInput && qtyInput.value) || 0;
+      const costPerKg = parseFloat(costKgInput && costKgInput.value) || 0;
+      const lineTotal = qty * costPerKg;
+      total += lineTotal;
+      const td = row.querySelector('td:nth-child(4)');
+      if (td) td.textContent = '₱' + lineTotal.toFixed(2);
+    });
+    const totalEl = document.getElementById('recipeTotal');
+    if (totalEl) totalEl.textContent = '₱' + total.toFixed(2);
+  };
+
+  loadSummary();
+  loadRecipeTable();
+}
+
+</script>
 </body>
 </html>

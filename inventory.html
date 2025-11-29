@@ -54,5 +54,59 @@
   </main>
 </div>
 
+<script>
+  
+/* -------------------
+   inventory.html code
+   ------------------- */
+function initInventory() {
+  window.mats = JSON.parse(localStorage.getItem('ctk_mats')) || [
+    {sku:"4362771",desc:"AJI Umami Seasoning 2.5kg×8",cost:459.99,perkg:184,cat:"Seasoning"},
+    {sku:"3498918",desc:"Pork Belly Skinless",cost:310,perkg:310,cat:"Pork"},
+    {sku:"4236408",desc:"Cooking Oil 17kg",cost:1510,perkg:88.8,cat:"Oil"},
+    {sku:"5129341",desc:"Sugar White Refined",cost:68,perkg:68,cat:"Sweetener"},
+    {sku:"6678210",desc:"Soy Sauce 5L",cost:285,perkg:57,cat:"Condiment"}
+  ];
+
+  function load() {
+    const tbody = document.getElementById('matBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    window.mats.forEach((m, i) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input value="${m.sku}"    onblur="save(${i},'sku',this.value)"></td>
+        <td><input value="${m.desc}"   onblur="save(${i},'desc',this.value)"></td>
+        <td><input type="number" step="0.01" value="${m.cost}"  onblur="save(${i},'cost',+this.value)"></td>
+        <td><input type="number" step="0.1"  value="${m.perkg}" onblur="save(${i},'perkg',+this.value)"></td>
+        <td><input value="${m.cat}"    onblur="save(${i},'cat',this.value)"></td>
+        <td><button class="btn btn-small" onclick="delMat(${i})">×</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  window.save = function(i, field, value) {
+    window.mats[i][field] = value;
+    localStorage.setItem('ctk_mats', JSON.stringify(window.mats));
+  };
+
+  window.addMat = function() {
+    window.mats.push({sku:"", desc:"", cost:0, perkg:0, cat:""});
+    localStorage.setItem('ctk_mats', JSON.stringify(window.mats));
+    load();
+  };
+
+  window.delMat = function(i) {
+    if (!confirm('Delete this material?')) return;
+    window.mats.splice(i, 1);
+    localStorage.setItem('ctk_mats', JSON.stringify(window.mats));
+    load();
+  };
+
+  load();
+}
+
+</script>
 </body>
 </html>

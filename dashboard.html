@@ -65,6 +65,95 @@
       window.location.href = 'index.html';
     }
   }
+
+  
+/* -------------------
+   dashboard.html code
+   ------------------- */
+function initDashboard() {
+  console.log('Initializing dashboard...');
+  
+  // Set today's date in the header if element exists
+  const todayDateEl = document.getElementById('todayDate');
+  if (todayDateEl) {
+    const today = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    todayDateEl.textContent = today.toLocaleDateString('en-PH', options);
+  }
+  
+  // Load dashboard stats from localStorage if available
+  loadDashboardStats();
+}
+
+function loadDashboardStats() {
+  // Try to load real data from production records
+  const prodDB = JSON.parse(localStorage.getItem('ctk_prod')) || {};
+  const today = new Date().toISOString().split('T')[0];
+  const todayData = prodDB[today] || [];
+  
+  let batchesToday = 0;
+  let totalOutput = 0;
+  let totalCost = 0;
+  let netVariance = 0;
+  
+  todayData.forEach(entry => {
+    batchesToday += entry.batches || 0;
+    totalOutput += entry.output || 0;
+    
+    // Calculate cost (simplified - you might want more complex logic)
+    const recipes = JSON.parse(localStorage.getItem('ctk_recipes')) || [];
+    const recipe = recipes.find(r => r.name === entry.product);
+    if (recipe) {
+      const rawMaterials = JSON.parse(localStorage.getItem('ctk_mats')) || [];
+      let recipeCost = 0;
+      recipe.ingredients.forEach(ing => {
+        const mat = rawMaterials.find(m => m.sku === ing.sku);
+        if (mat) {
+          recipeCost += (ing.qty || 0) * (entry.batches || 0) * (mat.perkg || 0);
+        }
+      });
+      totalCost += recipeCost;
+    }
+    
+    // Calculate variance
+    const expectedOutput = (entry.batches || 0) * (recipe?.yieldKg || 0);
+    netVariance += (entry.output || 0) - expectedOutput;
+  });
+  
+  // Update dashboard stats if elements exist
+  const batchesEl = document.querySelector('.stat:nth-child(1) .stat-value');
+  const outputEl = document.querySelector('.stat:nth-child(2) .stat-value');
+  const costEl = document.querySelector('.stat:nth-child(3) .stat-value');
+  const varianceEl = document.querySelector('.stat:nth-child(4) .stat-value');
+  
+  if (batchesEl && batchesToday > 0) batchesEl.textContent = batchesToday;
+  if (outputEl && totalOutput > 0) outputEl.textContent = totalOutput.toFixed(0) + ' kg';
+  if (costEl && totalCost > 0) costEl.textContent = '₱' + totalCost.toFixed(0);
+  if (varianceEl) {
+    varianceEl.textContent = (netVariance >= 0 ? '+' : '') + netVariance.toFixed(1) + ' kg';
+    varianceEl.className = netVariance >= 0 ? 'stat-value positive' : 'stat-value negative';
+  }
+  
+  // Update summary
+  const summaryEl = document.querySelector('.card-body');
+  if (summaryEl && todayData.length > 0) {
+    // Find top product
+    const productCount = {};
+    todayData.forEach(entry => {
+      if (entry.product) {
+        productCount[entry.product] = (productCount[entry.product] || 0) + (entry.batches || 0);
+      }
+    });
+    
+    const topProduct = Object.entries(productCount).sort((a, b) => b[1] - a[1])[0];
+    const hasWastage = netVariance < 0;
+    
+    summaryEl.innerHTML = `
+      <p>${todayData.length > 0 ? 'Production data loaded for today.' : 'No production data for today.'}</p>
+      <p><strong>Top Product:</strong> ${topProduct ? topProduct[0] : 'None'} • <strong>Wastage Alert:</strong> ${hasWastage ? 'Yes' : 'None'}</p>
+    `;
+  }
+}
 </script>
 </body>
 </html>

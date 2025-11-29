@@ -30,5 +30,76 @@
     </div>
   </main>
 </div>
+<script>
+    
+/* -------------------
+   recipes.html code
+   ------------------- */
+function initRecipes() {
+  // prefer existing saved recipes
+  window.recipes = JSON.parse(localStorage.getItem('ctk_recipes')) || [
+    {name:"Pork BBQ", batchSize:1, yieldKg:0.9, ingredients:[
+      {sku:"3498918", qty:7},
+      {sku:"4474919", qty:0.8},
+      {sku:"4362771", qty:0.1},
+    ]},
+    {name:"Chicken Cordon Bleu", batchSize:1, yieldKg:1, ingredients:[
+      {sku:"3735649", qty:10},
+      {sku:"4447742", qty:1},
+    ]}
+  ];
+
+  // provide rawMaterials (try both keys)
+  window.rawMaterials = JSON.parse(localStorage.getItem('ctk_raw')) || JSON.parse(localStorage.getItem('ctk_mats')) || [];
+
+  window.saveRecipes = function() { localStorage.setItem('ctk_recipes', JSON.stringify(window.recipes)); };
+  window.renderRecipes = function() {
+    const el = document.getElementById('recipes');
+    if (!el) return;
+    el.innerHTML = window.recipes.map((r,i) => `
+      <div class="card" style="margin-top:20px;">
+        <div class="card-header">
+          <input value="${r.name}" onchange="window.recipes[${i}].name=this.value;window.saveRecipes()">
+          <button class="btn btn-small" onclick="window.recipes.splice(${i},1);window.saveRecipes();window.renderRecipes()">×</button>
+        </div>
+        <div class="card-body">
+          Batch size: <input type="number" value="${r.batchSize}" style="width:80px" onchange="window.recipes[${i}].batchSize=+this.value;window.saveRecipes()">
+           | Expected yield (kg): <input type="number" step="0.1" value="${r.yieldKg}" style="width:100px" onchange="window.recipes[${i}].yieldKg=+this.value;window.saveRecipes()">
+          <table style="margin-top:10px;width:100%">
+            <thead><tr><th>Raw Material</th><th>Qty per Batch</th><th></th></tr></thead>
+            <tbody id="ing${i}"></tbody>
+          </table>
+          <button onclick="addIng(${i})">+ Add Ingredient</button>
+        </div>
+      </div>
+    `).join('');
+    // render ingredient rows
+    window.recipes.forEach((r,i) => {
+      const tbody = document.getElementById(`ing${i}`);
+      if (!tbody) return;
+      tbody.innerHTML = r.ingredients.map((ing,j) => {
+        const mat = window.rawMaterials.find(m => m.sku === ing.sku) || {desc:'???'};
+        return `<tr>
+          <td><select onchange="window.recipes[${i}].ingredients[${j}].sku=this.value;window.saveRecipes();window.renderRecipes()">${window.rawMaterials.map(m=>`<option value="${m.sku}" ${m.sku===ing.sku?'selected':''}>${m.sku} - ${m.desc}</option>`).join('')}</select></td>
+          <td><input type="number" step="0.001" value="${ing.qty}" onchange="window.recipes[${i}].ingredients[${j}].qty=+this.value;window.saveRecipes()"></td>
+          <td><button class="btn btn-small" onclick="window.recipes[${i}].ingredients.splice(${j},1);window.saveRecipes();window.renderRecipes()">×</button></td>
+        </tr>`;
+      }).join('');
+    });
+  };
+
+  window.addRecipe = function() { window.recipes.push({name:"New Product", batchSize:1, yieldKg:1, ingredients:[]}); window.saveRecipes(); window.renderRecipes(); };
+  window.addIng = function(i) {
+    const fallbackSku = (window.rawMaterials[0] && window.rawMaterials[0].sku) || '';
+    window.recipes[i].ingredients.push({sku:fallbackSku, qty:1});
+    window.saveRecipes(); window.renderRecipes();
+  };
+
+  window.renderRecipes();
+}
+
+// ADD THIS LINE TO INITIALIZE THE RECIPES
+initRecipes();
+</script>
 </body>
 </html>
